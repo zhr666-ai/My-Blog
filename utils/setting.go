@@ -8,6 +8,7 @@ import (
 var (
 	AppMode  string
 	HttpPort string
+	JwtKey   string
 
 	Db         string
 	DbHost     string
@@ -31,6 +32,7 @@ func LoadServer(file *ini.File) {
 	//如果不存在这个键（或配置文件缺失、段落错误），则返回默认值 debug。
 	AppMode = file.Section("server").Key("AppMode").MustString("debug")
 	HttpPort = file.Section("server").Key("HttpPort").MustString(":8080")
+	JwtKey = file.Section("server").Key("JwtKey").MustString("89js82js72")
 }
 func LoadData(file *ini.File) {
 	Db = file.Section("database").Key("Db").MustString("debug")

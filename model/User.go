@@ -73,7 +73,7 @@ func DeleteUser(id int) int {
 
 // 钩子函数
 // 注意方法和钩子函数的区别，方法得需要手动调用，跟钩子函数不需要手动调用
-func (u *User) Before(tx *gorm.DB) error {
+func (u *User) BeforeSave(tx *gorm.DB) error {
 	u.Password = ScryptPwd(u.Password)
 	return nil
 }
@@ -89,4 +89,21 @@ func ScryptPwd(password string) string {
 	}
 	Fpwd := base64.StdEncoding.EncodeToString(HashPw)
 	return Fpwd
+}
+
+// 登录验证
+func CheckLogin(username, password string) int {
+	var user User
+
+	db.Where("username = ?", username).First(&user)
+	if user.ID == 0 {
+		return errmsg.ERROR_USER_NOT_EXIST
+	}
+	if ScryptPwd(password) != user.Password {
+		return errmsg.ERROR_PASSWORD_WRONG
+	}
+	if user.Role != 0 {
+		return errmsg.ERROR_USER_NO_RIGHT
+	}
+	return errmsg.SUCCSE
 }
