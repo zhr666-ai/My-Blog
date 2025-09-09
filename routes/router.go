@@ -10,7 +10,11 @@ import (
 func InitRouter() {
 	//是在 Gin 框架中设置运行模式的常见写法，通常用于根据配置动态切换开发环境（debug）和生产环境（release）。
 	gin.SetMode(utils.AppMode)
-	r := gin.Default() //默认路由引擎，自带两个中间件
+	//r := gin.Default() //默认路由引擎，自带两个中间件
+	r := gin.New()
+	r.Use(middleware.Logger())
+	r.Use(gin.Recovery())
+
 	auth := r.Group("api/v1")
 	auth.Use(middleware.JwtToken())
 	{
@@ -34,6 +38,7 @@ func InitRouter() {
 	{
 		router.POST("user/add", v1.AddUser)
 		router.GET("users", v1.GetUser)
+		router.GET("category/list", v1.GetCate)
 		router.GET("article", v1.GetArt)
 		router.GET("article/list/:id", v1.GetCateArt)
 		router.GET("article/info/:id", v1.GetArtInfo)

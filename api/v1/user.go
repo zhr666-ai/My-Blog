@@ -3,7 +3,9 @@ package v1
 import (
 	"My-Blog/model"
 	"My-Blog/utils/errmsg"
+	"My-Blog/utils/validator"
 	"github.com/gin-gonic/gin"
+	//"github.com/go-playground/validator/v10"
 	"net/http"
 	"strconv"
 )
@@ -13,7 +15,16 @@ var code int
 // 添加用户
 func AddUser(c *gin.Context) {
 	var data model.User
+	var msg string
 	_ = c.ShouldBindJSON(&data)
+	msg, code = validator.Validate(&data)
+	if code != errmsg.SUCCSE {
+		c.JSON(http.StatusOK, gin.H{
+			"status":  code,
+			"message": msg,
+		})
+		return
+	}
 	code = model.CheckUser(data.Username)
 	if code == errmsg.SUCCSE {
 		model.CreateUser(&data)
@@ -23,7 +34,6 @@ func AddUser(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"status":  code,
-		"data":    data,
 		"message": errmsg.GetErrMsg(code),
 	})
 
@@ -41,11 +51,12 @@ func GetUser(c *gin.Context) {
 	if pageNum == 0 {
 		pageNum = -1
 	}
-	data := model.GetUsers(pageSize, pageNum)
+	data, total := model.GetUsers(pageSize, pageNum)
 	code = errmsg.SUCCSE
 	c.JSON(http.StatusOK, gin.H{
 		"status":  code,
 		"data":    data,
+		"total":   total,
 		"message": errmsg.GetErrMsg(code),
 	})
 }
