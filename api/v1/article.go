@@ -11,6 +11,7 @@ import (
 // 添加文章
 func AddArticle(c *gin.Context) {
 	var data model.Article
+	// Gin 框架中用于解析 HTTP 请求体中的 JSON 数据并绑定到结构体的常用方法
 	_ = c.ShouldBindJSON(&data)
 	code = model.CreateArt(&data)
 	c.JSON(http.StatusOK, gin.H{
@@ -23,8 +24,11 @@ func AddArticle(c *gin.Context) {
 
 // 查询分类下的所有文章
 func GetCateArt(c *gin.Context) {
+	//Query("pageSize") 用于获取 URL 中 pageSize 对应的查询参数值，返回类型为字符串
+	//strconv.Atoi(...)，是 Go 标准库 strconv 中的函数，用于将字符串（string）转换为整数（int）
 	pageSize, _ := strconv.Atoi(c.Query("pageSize"))
 	pageNum, _ := strconv.Atoi(c.Query("pageNum"))
+	//Param("id") 用于获取路由中定义的动态参数 id（即路由中 :id 占位符对应的值），返回类型为字符串
 	id, _ := strconv.Atoi(c.Param("id"))
 	if pageSize == 0 {
 		pageSize = -1

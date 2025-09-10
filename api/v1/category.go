@@ -11,8 +11,8 @@ import (
 // 添加分类
 func AddCategory(c *gin.Context) {
 	var data model.Category
-	_ = c.ShouldBindJSON(&data)
-	code = model.CheckCategory(data.Name)
+	_ = c.ShouldBindJSON(&data)           //将HTTP请求体中的JSON数据解析并绑定到指定结构体变量data上
+	code = model.CheckCategory(data.Name) //// 查询分类是否存在
 	if code == errmsg.SUCCSE {
 		model.CreateCate(&data)
 	}

@@ -16,8 +16,8 @@ var code int
 func AddUser(c *gin.Context) {
 	var data model.User
 	var msg string
-	_ = c.ShouldBindJSON(&data)
-	msg, code = validator.Validate(&data)
+	_ = c.ShouldBindJSON(&data)           //将HTTP请求体中的JSON数据解析并绑定到指定结构体变量data上
+	msg, code = validator.Validate(&data) //对结构体数据进行验证
 	if code != errmsg.SUCCSE {
 		c.JSON(http.StatusOK, gin.H{
 			"status":  code,

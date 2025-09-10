@@ -75,15 +75,19 @@ func DeleteUser(id int) int {
 // 钩子函数
 // 注意方法和钩子函数的区别，方法得需要手动调用，跟钩子函数不需要手动调用
 func (u *User) BeforeSave(tx *gorm.DB) error {
-	u.Password = ScryptPwd(u.Password)
+	u.Password = ScryptPwd(u.Password) //用于进行密码加密
 	return nil
 }
 
 // 密码加密
 func ScryptPwd(password string) string {
-	const KeyLen = 10
+	const KeyLen = 10 //最终生成的哈希值长度（字节）
+	//定义盐值（8字节固定值）
 	salt := make([]byte, 8)
 	salt = []byte{12, 32, 4, 6, 66, 22, 222, 11}
+	//密码加密的核心逻辑：
+	//[]byte(password)：明文密码转换为字节切片
+	//16384：N（CPU / 内存成本因子），值越大，计算越耗时（抗暴力破解能力越强）
 	HashPw, err := scrypt.Key([]byte(password), salt, 16384, 8, 1, KeyLen)
 	if err != nil {
 		log.Fatal(err)

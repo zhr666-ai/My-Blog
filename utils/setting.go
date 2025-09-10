@@ -24,6 +24,8 @@ var (
 )
 
 func init() {
+	//该方法会读取指定路径（config/config.ini）的 INI 格式文件
+	//并返回一个 *ini.File 类型的对象，后续可通过该对象获取具体配置值。
 	file, err := ini.Load("config/config.ini")
 	if err != nil {
 		fmt.Println("配置文件读取错误：", err)
